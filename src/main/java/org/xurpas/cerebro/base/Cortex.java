@@ -210,6 +210,55 @@ public class Cortex {
         }
     }
     
+    public void setDetail(int fnRow, Object foIndex, Object foValue){
+        if (!_init_tran) return;
+        if (fnRow > getItemCount() - 1) return; 
+        
+        try {
+            _detail.absolute(fnRow + 1);
+            
+            if (foIndex instanceof Number){
+                if ((int) foIndex == 0 || _det_list_sql[(int) foIndex] == null){
+                    _detail.updateObject((int) foIndex + 1 , foValue);
+                    _detail.updateRow();
+                } else {
+                    getDetCode(fnRow, (int) foIndex, (String) foValue, false);
+                }
+            } else {
+                _detail.updateObject((String) foIndex, foValue);
+                _detail.updateRow();
+            }
+            
+            _event.DetailRetreive(fnRow);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+    
+    public Object getDetail(int fnRow, Object foIndex){
+        if (!_init_tran) return null;
+        if (fnRow > getItemCount() - 1) return null; 
+        
+        try {
+            _detail.absolute(fnRow + 1);
+            
+            if (foIndex instanceof Number){
+                if ((int) foIndex == 0 || _det_list_sql[(int) foIndex] == null){
+                    return _detail.getObject((int) foIndex + 1 );
+                } else {
+                    return _mas_list_val[(int) foIndex];
+                }
+            } else {
+                
+                return _master.getObject((String) foIndex);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     public void setMaster(Object foIndex, Object foValue){
         if (!_init_tran) return;
         
@@ -562,6 +611,11 @@ public class Cortex {
     }
     
     private void getMasCode(int fnIndex, String fsValue, boolean fbSearch){
+        //TODO
+        //ito yung ginagamit pag may browse para sa column
+    }
+    
+    private void getDetCode(int fnRow, int fnIndex, String fsValue, boolean fbSearch){
         //TODO
         //ito yung ginagamit pag may browse para sa column
     }
